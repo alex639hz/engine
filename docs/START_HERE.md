@@ -10,6 +10,37 @@ This guide will help you navigate all the documentation and get started quickly.
 
 Choose your path based on what you need:
 
+### 🚀 Want to Develop & Rebuild the Package?
+→ **[HOW_TO_DEVELOP_AND_REBUILD.md](HOW_TO_DEVELOP_AND_REBUILD.md)** ← START HERE (5 minutes)
+- Quick start guide
+- Development workflow
+- When and how to rebuild
+- Daily development setup
+
+### 🔧 Need Complete Setup Instructions?
+→ **[SETUP_AND_BUILD_GUIDE.md](SETUP_AND_BUILD_GUIDE.md)** (Detailed, 15 minutes)
+- Automated setup (recommended)
+- Manual setup steps
+- Rebuild process
+- Testing procedures
+- Troubleshooting
+
+### 📌 Need Quick Command Reference?
+→ **[QUICK_DEV_REFERENCE.md](QUICK_DEV_REFERENCE.md)** (Copy-paste, 2 minutes)
+- Setup commands
+- Daily workflow
+- Build commands
+- Quick tasks
+
+### 👨‍💻 Want Full Development Guide?
+→ **[DEVELOPMENT.md](DEVELOPMENT.md)** (Comprehensive, 20+ minutes)
+- Development setup details
+- Project structure
+- Making changes
+- Testing changes
+- Common tasks
+- Workflow examples
+
 ### 🏃 Just Want to Install and Use?
 → **[QUICKSTART.md](QUICKSTART.md)** (5 minutes)
 - Fast installation steps
@@ -41,6 +72,13 @@ Choose your path based on what you need:
 - Publishing to PyPI
 - Version updates
 - CI/CD integration
+
+### 📦 What Resources Were Created?
+→ **[RESOURCES_CREATED.md](RESOURCES_CREATED.md)** (Overview of all new files)
+- List of new documentation
+- List of new scripts
+- Workflow overview
+- Quick start
 
 ---
 
@@ -205,11 +243,12 @@ twine upload dist/engine-0.1.0-py3-none-any.whl
 
 ### Path 4: Contribute & Develop 🔧
 
-1. Read: [INSTALL.md](INSTALL.md) - Development Install
-2. Set up virtual environment with `-e` flag
-3. Modify engine/ code
-4. Run tests: `pytest`
-5. Submit pull requests!
+1. Read: [DEVELOPMENT.md](DEVELOPMENT.md) - Complete development guide
+2. Set up virtual environment with editable install: `pip install -e .`
+3. Modify engine/ code (changes are immediately available)
+4. Test changes with scripts or Python REPL
+5. Rebuild when ready: `python -m build`
+6. Submit pull requests!
 
 ---
 
@@ -231,6 +270,7 @@ If you see `✓ All systems go!` - you're ready to use the package!
 - 📖 **Full README:** [README.md](README.md)
 - ⚡ **Quick Start:** [QUICKSTART.md](QUICKSTART.md)
 - 🔧 **Installation:** [INSTALL.md](INSTALL.md)
+- 👨‍💻 **Development:** [DEVELOPMENT.md](DEVELOPMENT.md)
 - 🚀 **Publishing:** [DEPLOY_TO_PYPI.md](DEPLOY_TO_PYPI.md)
 
 ### Contact

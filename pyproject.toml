@@ -10,9 +10,8 @@ readme = "README.md"
 authors = [
     {name = "Alex Zvuluny", email = "alex.639hz@gmail.com"}
 ]
-license = {text = "MIT"}
 requires-python = ">=3.9"
-license-files = {globs = ["LICENSE"]}
+license-files = ["LICENSE"]
 dependencies = [
     "annotated-doc==0.0.4",
     "annotated-types==0.7.0",

@@ -1,0 +1,95 @@
+from datetime import datetime
+import json
+import os
+import threading
+import logging
+from typing import TYPE_CHECKING, Final
+from pathlib import Path
+from engine.constants import *
+
+if TYPE_CHECKING:
+    from engine.types import LogInterface, StepInterface
+
+    # from project.types import *
+
+logger = logging.getLogger("utils")
+
+
+# class Register:
+#     def __init__(self, address: RegisterAddress, value: int = 0):
+#         self.address: RegisterAddress = address
+#         self.value = value
+
+#     def write_register(self, value):
+#         self.value = value
+
+#     def read_register(self):
+#         return self.value
+
+#     def write_bit(self, bit_idx: BitIndex, bit_value: BitValue):
+#         if bit_value:
+#             self.value |= 1 << bit_idx
+#         else:
+#             self.value &= ~(1 << bit_idx)
+#         return self.value
+
+#     def read_bit(self, bit_idx: BitIndex):
+#         return (self.value >> bit_idx) & 1
+
+
+class Utils:
+
+    # TODO create thread launcher helper and update the app
+    @staticmethod
+    def thread_define(thread_name, thread_function, *args, daemon=True):
+        thread = threading.Thread(
+            target=thread_function,
+            args=(args),
+            name=thread_name,
+            daemon=daemon,
+        )
+        return thread
+
+    @staticmethod
+    def atomic_file_write_text(path: Path, data: str) -> None:
+        """Atomically write text data to a file. This prevents partial writes and ensures that the file is either fully written or not modified at all."""
+        tmp = path.with_suffix(path.suffix + ".tmp")
+        tmp.write_text(data, encoding="utf-8")
+        os.replace(tmp, path)  # atomic
+
+    @staticmethod
+    def atomic_file_write_bytes(path: Path, data: bytes) -> None:
+        """Atomically write binary data to a file. This prevents partial writes and ensures that the file is either fully written or not modified at all."""
+        tmp = path.with_suffix(".tmp")
+        tmp.write_bytes(data)
+        os.replace(tmp, path)
+
+    @staticmethod
+    def print_file_as_stream(path: str, chunk_size: int = 32) -> None:
+        """Simulate streaming a file by reading it in chunks and printing each byte with its offset. This is useful for debugging or simulating real-time data processing."""
+        with open(path, "rb") as f:
+            offset = 0
+            while chunk := f.read(chunk_size):
+                for b in chunk:
+                    # print(f"{offset:08d}: {b}")
+                    logger.info(f"[STREAM from FILE] {offset:08d}: {b}")
+
+                    offset += 1
+
+    @staticmethod
+    def extract_step_interface(step_interface: StepInterface):
+        procedure = step_interface["procedure"]
+        args = step_interface["args"]
+        return (procedure, args)
+
+    @staticmethod
+    def read_json(_path):
+        path: Path = Path(_path)
+        with path.open(encoding="utf-8") as f:
+            json_payload = json.load(f)
+        return json_payload
+
+    @staticmethod
+    def timestamp_prefix():
+        now = datetime.now()
+        return now.strftime(r"%Y%m%d_%H%M%S")

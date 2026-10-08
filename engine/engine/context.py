@@ -1,0 +1,63 @@
+from datetime import datetime
+
+from engine.constants import *
+from engine.utils import *
+
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from engine.procedure import Procedure
+    from engine.framework import Framework
+
+
+class Context:
+    def __init__(self, owner: Procedure | Framework):
+        self._context: dict[str, Any] = {}
+        self._context_id = ""
+
+        self.owner = owner
+        pass
+
+    def create(self, session_args: dict[str, Any] = {}):
+        """Creates a session for the procedure.
+        The session dictionary stored in the procedure instance and used as data store during procedure execution.
+        The session can be stored in the database if insert_db is True.
+        """
+        context = {
+            "created_at": datetime.now(),
+            # "owner_label": self.owner.label, # TODO fix
+            **session_args,
+        }
+        self._context = context
+        return self._context
+
+    def get_context(self):
+        return self._context
+
+    def attribute_delete(self, name):
+        self._context[name] = None
+
+        return self
+
+    def attribute_set(self, name, value):
+        self._context[name] = value
+
+        return self
+
+    def attribute_push(self, name, value):
+
+        attribute: Any | None = self._context.get(name)
+
+        if attribute is None or not isinstance(attribute, list):
+            self._context[name] = []
+
+        # array: list =
+        self._context[name].append(value)
+
+        return self
+
+    def attribute_get(self, name, default=None) -> Any:
+        value = self._context.get(name)
+        if value == None:
+            value = default
+        return value

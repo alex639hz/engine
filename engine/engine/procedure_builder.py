@@ -1,0 +1,84 @@
+import sys
+from time import time
+from typing import TYPE_CHECKING, Callable
+
+from engine.constants import *
+from engine.utils import *
+from engine.step import Step
+from engine.step_functions import step_functions
+
+from engine.procedure import Procedure
+from engine.framework import framework
+
+# if TYPE_CHECKING:
+
+
+class ProcedureBuilder:
+
+    def __init__(self, label):
+        self.label: str = label
+        self.steps: list["Step"] = []
+
+    def append_step_by_elements(self, op: STEP, args, label):
+        step = Step(op, args, label, step_functions[op])
+        self.steps.append(step)
+        return self
+
+    def generate_procedure(self) -> Procedure:
+        procedure = Procedure(self.label)
+
+        for step in self.steps:
+            procedure.step_append(step)
+
+        return procedure
+
+    def add_step_null(self, label):
+        self.append_step_by_elements(STEP.NULL, NOARG, label)
+
+    def step_framework_exit(self, msg="", label=""):
+        self.append_step_by_elements(STEP.FRAMEWORK_EXIT, {"msg": msg}, label)
+
+    def step_procedure_stop(self, msg="", label=""):
+        self.append_step_by_elements(STEP.PROCEDURE_STOP, {"msg": msg}, label)
+
+    def insert_procedure(self, procedure_to_insert: Procedure):
+        for step in procedure_to_insert._steps:
+            self.steps.append(step)
+
+    def step_call(self, function: Callable, args=NOARG, label="__name__"):
+        step_args = {
+            STEP_ARG.FUNCTION: function,
+            STEP_ARG.ARGS: args,
+        }
+
+        label = function.__name__ if label == "__name__" else label
+
+        self.append_step_by_elements(
+            STEP.FUNCTION_CALL,
+            step_args,
+            label,
+        )
+
+    def add_step_delay(self, seconds: float, label=DEF_NO_LABEL):
+        args = {STEP_ARG.DURATION_SECONDS: seconds}
+        self.append_step_by_elements(STEP.DELAY_START, args, label)
+        self.append_step_by_elements(STEP.DELAY_WAIT, args, DEF_NO_LABEL)
+
+    def add_step_worker_start(self, thread_name: str, function, args, label=""):
+        step_args = {
+            STEP_ARG.FUNCTION: function,
+            STEP_ARG.ARGS: args,
+            STEP_ARG.TITLE: thread_name,
+        }
+        self.append_step_by_elements(STEP.WORKER_START, step_args, label)
+
+    def add_step_worker_wait(self, thread_name, timeout, label=None):
+        step_args = {
+            STEP_ARG.TITLE: thread_name,
+            STEP_ARG.DURATION_SECONDS: timeout,
+        }
+        self.append_step_by_elements(
+            STEP.WORKER_WAIT,
+            step_args,
+            label,
+        )
